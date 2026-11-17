@@ -12,25 +12,31 @@ model User {
   email      String   @unique
   password   String
   businessId String?
-  role       String   @default("user")
+  role       String   @default("kasir")  // pemilik, manajer, kasir
+  branchId   String?   // cabang tempat pengguna bertugas
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   business   Business?  @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  branch     Branch?    @relation(fields: [branchId], references: [id], onDelete: SetNull)
 }
 
+
 model Business {
-  id        String   @id @default(uuid())
-  name      String
-  address   String?
-  phone     String?
-  plan      String   @default("basic")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  users     User[]
-  products  Product[]
-  customers Customer[]
-  sales     Sale[]
+  id         String   @id @default(uuid())
+  name       String
+  address    String?
+  phone      String?
+  plan       String   @default("basic") // basic, pro, enterprise
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  branches   Branch[]
+  users      User[]
+  categories Category[]
+  products   Product[]
+  customers  Customer[]
+  sales      Sale[]
 }
+
 
 model Product {
   id          String   @id @default(uuid())
