@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 
 export default function DashboardPage() {
   const router = useRouter();
-  const user = useState<any>(null)[0];
+  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
     const stored = localStorage.getItem('karsapos_user');
