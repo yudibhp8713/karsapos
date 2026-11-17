@@ -25,4 +25,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-Fix: dashboard page sederhana
