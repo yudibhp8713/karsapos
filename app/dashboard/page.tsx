@@ -2,16 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { 
-  LayoutDashboard, 
-  Package, 
-  ShoppingCart, 
-  BarChart3, 
-  Users, 
-  Settings,
-  LogOut,
-  Store
-} from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingCart, BarChart3, Users, Settings, LogOut, Store } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 const menuItems = [
@@ -25,7 +16,7 @@ const menuItems = [
 
 export default function DashboardPage() {
   const router = useRouter();
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const stored = localStorage.getItem('karsapos_user');
@@ -38,7 +29,6 @@ export default function DashboardPage() {
 
   const handleLogout = () => {
     localStorage.removeItem('karsapos_user');
-    document.cookie = 'karsapos_user=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
     router.push('/login');
   };
 
@@ -60,8 +50,8 @@ export default function DashboardPage() {
 
         <nav className="p-3">
           {menuItems.map((item, i) => (
-            <Link 
-              key={i} 
+            <Link
+              key={i}
               href={item.href}
               className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 hover:bg-teal-50 hover:text-teal-600 mb-0.5 transition"
             >
@@ -100,7 +90,6 @@ export default function DashboardPage() {
             <p className="text-2xl font-bold text-gray-800">Rp 0</p>
           </div>
           <div className="bg-white p-6 rounded-xl shadow-sm border">
-            <p className="text-sm text-gray-500 mb-1">Total Produk</
             <p className="text-sm text-gray-500 mb-1">Total Produk</p>
             <p className="text-2xl font-bold text-gray-800">0</p>
           </div>
@@ -135,4 +124,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-
