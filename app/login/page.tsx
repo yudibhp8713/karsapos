@@ -36,4 +36,3 @@ export default function LoginPage() {
     </div>
   );
 }
-Fix: login page sederhana
