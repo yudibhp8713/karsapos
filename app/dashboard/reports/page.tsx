@@ -1,142 +1,201 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { BarChart3, TrendingUp, Package, Calendar } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
+import { FileText, TrendingUp, DollarSign, ShoppingCart, Users } from 'lucide-react';
+
+interface SaleItem {
+  id: string;
+  name: string;
+  quantity: number;
+  price: number;
+  subtotal: number;
+}
+
+interface Sale {
+  invoiceNo: string;
+  items: SaleItem[];
+  total: number;
+  customer?: { name: string };
+  date: string;
+}
 
 export default function ReportsPage() {
-  const router = useRouter();
-  const [user, setUser] = useState<any>(null);
-  const [transactions, setTransactions] = useState<any[]>([]);
-const [dateRange, setDateRange] = useState({
-  from: '',
-  to: ''
-});
+  const [sales, setSales] = useState<Sale[]>([]);
+  const [period, setPeriod] = useState<'week' | 'month'>('week');
 
-useEffect(() => {
-  const today = new Date().toISOString().split('T')[0];
-  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-  setDateRange({ from: thirtyDaysAgo, to: today });
+  useEffect(() => {
+    const saved = localStorage.getItem('karsapos_sales');
+    if (saved) setSales(JSON.parse(saved));
+  }, []);
 
-  const stored = localStorage.getItem('karsapos_user');
-  if (!stored) { router.push('/login'); return; }
-  const u = JSON.parse(stored);
-  setUser(u);
-  if (u.businessId) loadTransactions(u.businessId);
-}, [router]);
+  // Ringkasan
+  const totalRevenue = sales.reduce((sum, s) => sum + s.total, 0);
+  const totalTransactions = sales.length;
+  const avgTransaction = totalTransactions > 0 ? totalRevenue / totalTransactions : 0;
+  const totalItems = sales.reduce((sum, s) => sum + s.items.reduce((i, item) => i + item.quantity, 0), 0);
 
-  const loadTransactions = async (businessId: string) => {
-    try {
-      const res = await fetch(
-        `/api/transactions?businessId=${businessId}&from=${dateRange.from}&to=${dateRange.to}`
-      );
-      const data = await res.json();
-      setTransactions(data);
-    } catch (e) { console.error(e); }
+  // Data untuk grafik
+  const groupByDate = () => {
+    const grouped: Record<string, number> = {};
+    sales.forEach(sale
+ => {
+      const date = new Date(sale.date).toLocaleDateString('id-ID', {
+        day: '2-digit',
+        month: '2-digit'
+      });
+      grouped[date] = (grouped[date] || 0) + sale.total;
+    });
+    return Object.entries(grouped).map(([date, total]) => ({ date, total }));
   };
 
-  const totalSales = transactions.reduce((s, t) => s + Number(t.totalAmount), 0);
-  const totalTransactions = transactions.length;
-  const avgTransaction = totalTransactions > 0 ? totalSales / totalTransactions : 0;
+  const chartData = groupByDate();
 
   return (
     <div className="p-6">
-      <h2 className="text-xl font-bold text-gray-800 mb-6">📊 Laporan Penjualan</h2>
-      
-      {/* Filter Tanggal */}
-      <div className="flex gap-4 mb-6">
-        <div>
-          <label className="block text-sm text-gray-600 mb-1">Dari</label>
-          <input
-            type="date"
-            value={dateRange.from}
-            onChange={(e) => setDateRange({ ...dateRange, from: e.target.value })}
-            className="px-3 py-2 border rounded-lg"
-          />
-        </div>
-        <div>
-          <label className="block text-sm text-gray-600 mb-1">Sampai</label>
-          <input
-            type="date"
-            value={dateRange.to}
-            onChange={(e) => setDateRange({ ...dateRange, to: e.target.value })}
-            className="px-3 py-2 border rounded-lg"
-          />
-        </div>
-        <button
-          onClick={() => loadTransactions(user.businessId)}
-          className="self-end bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700"
-        >
-          Tampilkan
-        </button>
-      </div>
+      <h1 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+        <FileText size={24} className="text-teal-600" /> Laporan Penjualan
+      </h1>
 
       {/* Ringkasan */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        <div className="bg-white p-5 rounded-xl shadow-sm border">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-teal-100 rounded-lg">
-              <TrendingUp size={20} className="text-teal-600" />
+        <div className="bg-white rounded-lg shadow p-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-500">Total Pendapatan</p>
+              <p className="text-xl font-bold text-teal-600 mt-1">Rp {totalRevenue.toLocaleString('id-ID')}</p>
             </div>
-            <span className="text-sm text-gray-500">Total Penjualan</span>
+            <DollarSign size={32} className="text-teal-200" />
           </div>
-          <p className="text-xl font-bold text-gray-800">Rp {totalSales.toLocaleString('id-ID')}</p>
         </div>
-        <div className="bg-white p-5 rounded-xl shadow-sm border">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <BarChart3 size={20} className="text-blue-600" />
+        <div className="bg-white rounded-lg shadow p-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-500">Total Transaksi</p>
+              <p className="text-xl font-bold text-blue-600 mt-1">{totalTransactions}</p>
             </div>
-            <span className="text-sm text-gray-500">Transaksi</span>
+            <ShoppingCart size={32} className="text-blue-200" />
           </div>
-          <p className="text-xl font-bold text-gray-800">{totalTransactions}</p>
         </div>
-        <div className="bg-white p-5 rounded-xl shadow-sm border">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-purple-100 rounded-lg">
-              <Package size={20} className="text-purple-600" />
+        <div className="bg-white rounded-lg shadow p-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-500">Rata-rata Transaksi</p>
+              <p className="text-xl font-bold text-orange-600 mt-1">Rp {avgTransaction.toLocaleString('id-ID', { maximumFractionDigits: 0 })}</p>
             </div>
-            <span className="text-sm text-gray-500">Rata-rata</span>
+            <TrendingUp size={32} className="text-orange-200" />
           </div>
-          <p className="text-xl font-bold text-gray-800">Rp {avgTransaction.toLocaleString('id-ID', { maximumFractionDigits: 0 })}</p>
         </div>
-        <div className="bg-white p-5 rounded-xl shadow-sm border">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-orange-100 rounded-lg">
-              <Calendar size={20} className="text-orange-600" />
+        <div className="bg-white rounded-lg shadow p-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-500">Total Barang Terjual</p>
+              <p className="text-xl font-bold text-purple-600 mt-1">{totalItems}</p>
             </div>
-            <span className="text-sm text-gray-500">Periode</span>
+            <Users size={32} className="text-purple-200" />
           </div>
-          <p className="text-sm font-medium text-gray-800">{dateRange.from} — {dateRange.to}</p>
         </div>
       </div>
 
-      {/* Daftar Transaksi */}
-      <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
-        <h3 className="px-4 py-3 bg-gray-50 border-b font-medium">Riwayat Transaksi</h3>
-        {transactions.length === 0 ? (
-          <p className="px-4 py-8 text-center text-gray-500">Belum ada transaksi pada periode ini</p>
+      {/* Grafik */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div className="bg-white rounded-lg shadow p-5">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-lg font-semibold">Grafik Penjualan</h2>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setPeriod('week')}
+                className={`px-3 py-1 text-sm rounded ${period === 'week' ? 'bg-teal-600 text-white' : 'bg-gray-100'}`}
+              >
+                7 Hari
+              </button>
+              <button
+                onClick={() => setPeriod('month')}
+                className={`px-3 py-1 text-sm rounded ${period === 'month' ? 'bg-teal-600 text-white' : 'bg-gray-100'}`}
+              >
+                30 Hari
+              </button>
+            </div>
+          </div>
+          {chartData.length === 0 ? (
+            <div className="h-64 flex items-center justify-center text-gray-400">
+              Belum ada data penjualan
+            </div>
+          ) : (
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                <XAxis dataKey="date" fontSize={12} />
+                <YAxis fontSize={12} tickFormatter={(v) => `Rp${(v/1000).toFixed(0)}rb`} />
+                <Tooltip
+                  formatter={(value: number) => [`Rp ${value.toLocaleString('id-ID')}`, 'Total']}
+                  labelFormatter={(label) => `Tanggal: ${label}`}
+                />
+                <Bar dataKey="total" fill="#0d9488" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+
+        <div className="bg-white rounded-lg shadow p-5">
+          <h2 className="text-lg font-semibold mb-4">Tren Penjualan</h2>
+          {chartData.length === 0 ? (
+            <div className="h-64 flex items-center justify-center text-gray-400">
+              Belum ada data penjualan
+            </div>
+          ) : (
+            <ResponsiveContainer width="100%" height={250}>
+              <LineChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                <XAxis dataKey="date" fontSize={12} />
+                <YAxis fontSize={12} tickFormatter={(v) => `Rp${(v/1000).toFixed(0)}rb`} />
+                <Tooltip
+                  formatter={(value: number) => [`Rp ${value.toLocaleString('id-ID')}`, 'Total']}
+                  labelFormatter={(label) => `Tanggal: ${label}`}
+                />
+                <Line type="monotone" dataKey="total" stroke="#0d9488" strokeWidth={2} dot={{ fill: '#0d9488' }} />
+              </LineChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+      </div>
+
+      {/* Daftar Transaksi Terbaru */}
+      <div className="bg-white rounded-lg shadow overflow-hidden">
+        <h2 className="text-lg font-semibold p-5 border-b">Riwayat Transaksi Terbaru</h2>
+        {sales.length === 0 ? (
+          <div className="p-12 text-center text-gray-400">
+            Belum ada transaksi. Mulai jual di halaman Kasir!
+          </div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-gray-50 border-b">
-              <tr>
-                <th className="text-left px-4 py-2">No. Invoice</th>
-                <th className="text-left px-4 py-2">Tanggal</th>
-                <th className="text-left px-4 py-2">Metode</th>
-                <th className="text-right px-4 py-2">Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              {transactions.map(t => (
-                <tr key={t.id} className="border-t hover:bg-gray-50">
-                  <td className="px-4 py-2 font-mono text-sm">{t.invoiceNo}</td>
-                  <td className="px-4 py-2">{new Date(t.createdAt).toLocaleString('id-ID')}</td>
-                  <td className="px-4 py-2">{t.paymentMethod}</td>
-                  <td className="px-4 py-2 text-right font-medium">Rp {Number(t.totalAmount).toLocaleString('id-ID')}</td>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-5 py-3 text-left text-sm font-medium text-gray-600">No. Faktur</th>
+                  <th className="px-5 py-3 text-left text-sm font-medium text-gray-600">Tanggal</th>
+                  <th className="px-5 py-3 text-left text-sm font-medium text-gray-600">Pelanggan</th>
+                  <th className="px-5 py-3 text-center text-sm font-medium text-gray-600">Item</th>
+                  <th className="px-5 py-3 text-right text-sm font-medium text-gray-600">Total</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y">
+                {sales.slice(0, 10).map(s => (
+                  <tr key={s.invoiceNo} className="hover:bg-gray-50">
+                    <td className="px-5 py-3 font-mono text-sm font-medium">{s.invoiceNo}</td>
+                    <td className="px-5 py-3 text-sm text-gray-500">
+                      {new Date(s.date).toLocaleString('id-ID')}
+                    </td>
+                    <td className="px-5 py-3 text-sm">{s.customer?.name || 'Pelanggan Umum'}</td>
+                    <td className="px-5 py-3 text-center text-sm">{s.items.length}</td>
+                    <td className="px-5 py-3 text-right font-semibold text-teal-600">
+                      Rp {s.total.toLocaleString('id-ID')}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>
