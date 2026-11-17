@@ -1,0 +1,11 @@
+// Di dalam menu navigasi dashboard
+const menuItems = [
+  { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+  { name: 'Produk', href: '/dashboard/products', icon: Package },
+  { name: 'Kategori', href: '/dashboard/categories', icon: FolderOpen }, // ← baru
+  { name: 'Kasir', href: '/dashboard/cashier', icon: DollarSign },
+  { name: 'Pelanggan', href: '/dashboard/customers', icon: Users },
+  { name: 'Laporan', href: '/dashboard/reports', icon: FileText },
+  { name: 'Laba & Rugi', href: '/dashboard/profit', icon: TrendingUp }, // ← baru
+  { name: 'Cabang', href: '/dashboard/branches', icon: Building2 }, // ← baru — Enterprise saja
+];
