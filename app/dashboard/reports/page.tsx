@@ -44,7 +44,6 @@ export default function ReportsPage() {
         <div>
           <label className="block text-sm text-gray-600 mb-1">Dari</label>
           <input
-            type
             type="date"
             value={dateRange.from}
             onChange={(e) => setDateRange({ ...dateRange, from: e.target.value })}
