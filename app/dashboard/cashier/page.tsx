@@ -73,25 +73,29 @@ export default function CashierPage() {
   const total = cart.reduce((sum, item) => sum + item.subtotal, 0);
 
   const handleCheckout = () => {
-    if (cart.length === 0) return;
-    const invoiceNo = 'INV-' + Date.now();
-    const sale = {
-      invoiceNo,
-      items: cart,
-      total,
-      customer: selectedCustomer,
-      date: new Date().toISOString()
-    };
-    
-    const sales = JSON.parse(localStorage.getItem('karsapos_sales') || '[]');
-    sales.unshift(sale);
-    localStorage.setItem('karsapos_sales', JSON.stringify(sales));
-    
-    alert(`✅ Transaksi Berhasil!\nFaktur: ${invoiceNo}\nTotal: Rp ${total.toLocaleString('id-ID')}`);
-    
-    setCart([]);
-    setSelectedCustomer(null);
+  if (cart.length === 0) return;
+  const invoiceNo = 'INV-' + Date.now();
+  const sale = {
+    invoiceNo,
+    items: cart,
+    total,
+    customer: selectedCustomer,
+    date: new Date().toISOString()
   };
+  
+  const sales = JSON.parse(localStorage.getItem('karsapos_sales') || '[]');
+  sales.unshift(sale);
+  localStorage.setItem('karsapos_sales', JSON.stringify(sales));
+  
+  alert(`✅ Transaksi Berhasil!\nFaktur: ${invoiceNo}\nTotal: Rp ${total.toLocaleString('id-ID')}`);
+  
+  // Buka halaman struk di tab baru
+  window.open(`/dashboard/sales/${invoiceNo}/receipt`, '_blank');
+  
+  setCart([]);
+  setSelectedCustomer(null);
+};
+
 
   return (
     <div className="p-6">
