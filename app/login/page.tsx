@@ -26,8 +26,9 @@ export default function LoginPage() {
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
           required
-          style={{ padding: '0.5rem', margin: '0.5rem', display: 'block', marginLeft: 'auto', marginRight: 'auto' }}
+          style={{ padding: '0.5rem', margin: '0.5rem' }}
         />
+        <br />
         <button type="submit" style={{ padding: '0.5rem 1rem' }}>
           Masuk
         </button>
@@ -35,4 +36,4 @@ export default function LoginPage() {
     </div>
   );
 }
-tulis pesan: `Buat login page baru`
+Fix: login page sederhana
