@@ -177,8 +177,6 @@ export default function NewProductPage() {
           </button>
         </div>
       </form>
-    </div
-      </form>
     </div>
   );
 }

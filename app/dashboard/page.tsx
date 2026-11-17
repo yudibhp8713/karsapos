@@ -80,8 +80,7 @@ export default function DashboardPage() {
           >
             <LogOut size={20} />
             <span>Keluar</span>
-          </button>
-          
+           </button>
         </div>
       </aside>
 
