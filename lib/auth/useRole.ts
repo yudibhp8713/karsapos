@@ -1,15 +1,11 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRole } from '@/lib/auth/useRole';
 
-export function useRole(allowedRoles: string[]) {
-  // Baca user dari localStorage (sementara)
-  const userStr = typeof window !== 'undefined' ? localStorage.getItem('karsapos_user') : null;
-  const user = userStr ? JSON.parse(userStr) : null;
-  const router = useRouter();
-
-  if (!user || !allowedRoles.includes(user.role)) {
-    return { authorized: false, user, redirect: () => router.push('/dashboard') };
+export default function ReportsPage() {
+  const { authorized, user } = useRole(['pemilik', 'manajer']);
+  if (!authorized) {
+    return <div className="p-12 text-center text-red-500">Anda tidak memiliki akses ke halaman ini.</div>;
   }
-  return { authorized: true, user };
+  // ... sisa kode halaman
 }
