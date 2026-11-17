@@ -101,3 +101,38 @@ export default function DashboardPage() {
           </div>
           <div className="bg-white p-6 rounded-xl shadow-sm border">
             <p className="text-sm text-gray-500 mb-1">Total Produk</
+            <p className="text-sm text-gray-500 mb-1">Total Produk</p>
+            <p className="text-2xl font-bold text-gray-800">0</p>
+          </div>
+          <div className="bg-white p-6 rounded-xl shadow-sm border">
+            <p className="text-sm text-gray-500 mb-1">Transaksi Bulan Ini</p>
+            <p className="text-2xl font-bold text-gray-800">0</p>
+          </div>
+          <div className="bg-white p-6 rounded-xl shadow-sm border">
+            <p className="text-sm text-gray-500 mb-1">Pelanggan</p>
+            <p className="text-2xl font-bold text-gray-800">0</p>
+          </div>
+        </div>
+
+        <div className="bg-teal-50 p-6 rounded-xl border border-teal-100">
+          <h3 className="text-lg font-semibold text-teal-800 mb-4">🚀 Langkah Pertama</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Link href="/dashboard/products" className="p-4 bg-white rounded-lg hover:shadow-md transition">
+              <h4 className="font-medium text-gray-800">1. Tambah Produk</h4>
+              <p className="text-sm text-gray-500">Masukkan barang dagangan Anda</p>
+            </Link>
+            <Link href="/dashboard/pos" className="p-4 bg-white rounded-lg hover:shadow-md transition">
+              <h4 className="font-medium text-gray-800">2. Buka Kasir</h4>
+              <p className="text-sm text-gray-500">Mulai proses penjualan</p>
+            </Link>
+            <Link href="/dashboard/reports" className="p-4 bg-white rounded-lg hover:shadow-md transition">
+              <h4 className="font-medium text-gray-800">3. Lihat Laporan</h4>
+              <p className="text-sm text-gray-500">Pantau kinerja bisnis Anda</p>
+            </Link>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}
+

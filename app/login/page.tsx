@@ -42,7 +42,6 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
-  };
-}
+ }
 
 Commit: `fix: tutup fungsi`
