@@ -1,1 +1,2 @@
-export const prisma = null as any;
+const prisma = {} as any;
+export default prisma;
