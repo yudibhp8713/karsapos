@@ -28,7 +28,6 @@ export default function DashboardPage() {
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    // Ambil data user dari localStorage (sementara)
     const stored = localStorage.getItem('karsapos_user');
     if (!stored) {
       router.push('/login');
@@ -47,7 +46,6 @@ export default function DashboardPage() {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      {/* Sidebar */}
       <aside className="w-64 bg-white border-r shadow-sm">
         <div className="p-4 border-b">
           <h1 className="text-xl font-bold text-teal-600">KarsaPOS</h1>
@@ -74,19 +72,17 @@ export default function DashboardPage() {
         </nav>
 
         <div className="absolute bottom-4 w-64 px-3">
-          <button>
+          <button
             onClick={handleLogout}
             className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-600 hover:bg-red-50 w-full transition"
           >
             <LogOut size={20} />
             <span>Keluar</span>
-           </button>
+          </button>
         </div>
       </aside>
 
-      {/* Konten Utama */}
       <main className="flex-1 p-6">
-        {/* Header Atas */}
         <header className="flex justify-between items-center mb-8">
           <div>
             <h2 className="text-2xl font-bold text-gray-800">Selamat Datang, {user.name} 👋</h2>
@@ -98,45 +94,10 @@ export default function DashboardPage() {
           </div>
         </header>
 
-        {/* Kartu Statistik */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="bg-white p-6 rounded-xl shadow-sm border">
             <p className="text-sm text-gray-500 mb-1">Penjualan Hari Ini</p>
             <p className="text-2xl font-bold text-gray-800">Rp 0</p>
           </div>
           <div className="bg-white p-6 rounded-xl shadow-sm border">
-            <p className="text-sm text-gray-500 mb-1">Total Produk</p>
-            <p className="text-2xl font-bold text-gray-800">0</p>
-          </div>
-          <div className="bg-white p-6 rounded-xl shadow-sm border">
-            <p className="text-sm text-gray-500 mb-1">Transaksi Bulan Ini</p>
-            <p className="text-2xl font-bold text-gray-800">0</p>
-          </div>
-          <div className="bg-white p-6 rounded-xl shadow-sm border">
-            <p className="text-sm text-gray-500 mb-1">Pelanggan</p>
-            <p className="text-2xl font-bold text-gray-800">0</p>
-          </div>
-        </div>
-
-        {/* Cepat Mulai */}
-        <div className="bg-teal-50 p-6 rounded-xl border border-teal-100">
-          <h3 className="text-lg font-semibold text-teal-800 mb-4">🚀 Langkah Pertama</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Link href="/dashboard/products" className="p-4 bg-white rounded-lg hover:shadow-md transition">
-              <h4 className="font-medium text-gray-800">1. Tambah Produk</h4>
-              <p className="text-sm text-gray-500">Masukkan barang dagangan Anda</p>
-            </Link>
-            <Link href="/dashboard/pos" className="p-4 bg-white rounded-lg hover:shadow-md transition">
-              <h4 className="font-medium text-gray-800">2. Buka Kasir</h4>
-              <p className="text-sm text-gray-500">Mulai proses penjualan</p>
-            </Link>
-            <Link href="/dashboard/reports" className="p-4 bg-white rounded-lg hover:shadow-md transition">
-              <h4 className="font-medium text-gray-800">3. Lihat Laporan</h4>
-              <p className="text-sm text-gray-500">Pantau kinerja bisnis Anda</p>
-            </Link>
-          </div>
-        </div>
-      </main>
-    </div>
-  );
-}
+            <p className="text-sm text-gray-500 mb-1">Total Produk</
