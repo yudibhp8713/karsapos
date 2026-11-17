@@ -74,14 +74,14 @@ export default function DashboardPage() {
         </nav>
 
         <div className="absolute bottom-4 w-64 px-3">
-          <button
+          <button>
             onClick={handleLogout}
             className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-600 hover:bg-red-50 w-full transition"
           >
             <LogOut size={20} />
             <span>Keluar</span>
-          </button
           </button>
+          
         </div>
       </aside>
 
