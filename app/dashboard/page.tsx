@@ -16,14 +16,13 @@ export default function DashboardPage() {
     setUser(JSON.parse(stored));
   }, [router]);
 
-  if (!user) return <div className="p-8">Memuat...</div>;
+  if (!user) return <div>Memuat...</div>;
 
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold">Selamat Datang di KarsaPOS</h1>
-      <p className="mt-2">Halo, {user.name}! 🎉</p>
-      <p className="mt-1 text-gray-500">Aplikasi sedang disiapkan. Fitur akan segera tersedia.</p>
+    <div style={{ padding: '2rem' }}>
+      <h1>Selamat Datang, {user.name}!</h1>
+      <p>KarsaPOS sedang dalam persiapan.</p>
     </div>
   );
 }
-Commit pesan: `Buat dashboard sederhana`
+Fix: dashboard page sederhana
