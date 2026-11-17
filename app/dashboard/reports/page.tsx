@@ -8,18 +8,22 @@ export default function ReportsPage() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [transactions, setTransactions] = useState<any[]>([]);
-  const [dateRange, setDateRange] = useState({
-    from: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    to: new Date().toISOString().split('T')[0]
-  });
+const [dateRange, setDateRange] = useState({
+  from: '',
+  to: ''
+});
 
-  useEffect(() => {
-    const stored = localStorage.getItem('karsapos_user');
-    if (!stored) { router.push('/login'); return; }
-    const u = JSON.parse(stored);
-    setUser(u);
-    loadTransactions(u.businessId);
-  }, [router]);
+useEffect(() => {
+  const today = new Date().toISOString().split('T')[0];
+  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+  setDateRange({ from: thirtyDaysAgo, to: today });
+
+  const stored = localStorage.getItem('karsapos_user');
+  if (!stored) { router.push('/login'); return; }
+  const u = JSON.parse(stored);
+  setUser(u);
+  if (u.businessId) loadTransactions(u.businessId);
+}, [router]);
 
   const loadTransactions = async (businessId: string) => {
     try {
